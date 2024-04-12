@@ -53,10 +53,11 @@ public class PessoaService {
         }
         throw new RuntimeException("Não encontramos o usuário com o ID: " + id);
     }
-    public Pessoa alterarPessoa(Pessoa pessoa, Endereco endereco) {
+    public Pessoa alterarPessoa(Pessoa pessoa) {
         if (pessoa.getId() == null) {
             throw new IllegalArgumentException("O ID da pessoa não pode ser nulo para realizar a alteração.");
         }
+
         Optional<Pessoa> pessoaOptional = pessoaRepository.findById(pessoa.getId());
         if (pessoaOptional.isPresent()) {
             Pessoa pessoaSalva = pessoaOptional.get();
@@ -64,25 +65,12 @@ public class PessoaService {
             pessoaSalva.setDataNascimento(pessoa.getDataNascimento());
             pessoaSalva.setCpf(pessoa.getCpf());
 
-            if (endereco != null && endereco.getId() != null) {
-                Optional<Endereco> enderecoOptional = enderecoRepository.findById(endereco.getId());
-                if (enderecoOptional.isPresent()) {
-                    Endereco enderecoSalvo = enderecoOptional.get();
-                    enderecoSalvo.setRua(enderecoSalvo.getRua());
-                    enderecoSalvo.setNumero(enderecoSalvo.getNumero());
-                    enderecoSalvo.setBairro(enderecoSalvo.getBairro());
-                    enderecoSalvo.setCidade(enderecoSalvo.getCidade());
-                    enderecoSalvo.setEstado(enderecoSalvo.getEstado());
-                    enderecoSalvo.setCep(enderecoSalvo.getCep());
-
-                    pessoaSalva.getEnderecos().add(enderecoSalvo);
-                }else {
-                    throw new RuntimeException("Endereço não encontrado com o ID: " + endereco.getId());
-                }
-            }
+            return pessoaRepository.save(pessoaSalva);
         }
+
         throw new RuntimeException("Não foi possível encontrar a pessoa com ID: " + pessoa.getId());
     }
+
     public void excluirPessoa(Long id) {
         Optional<Pessoa> pessoaOptional = pessoaRepository.findById(id);
         if (pessoaOptional.isPresent()) {

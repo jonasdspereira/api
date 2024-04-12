@@ -46,9 +46,14 @@ public class PessoaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Pessoa> alterarPessoaComEndereco(@PathVariable Long id, @RequestBody Pessoa pessoa, @RequestBody Endereco endereco) {
+    public ResponseEntity<Pessoa> alterarPessoa(@PathVariable Long id, @RequestBody Pessoa pessoa) {
         pessoa.setId(id);
-        Pessoa pessoaAlterada = pessoaService.alterarPessoa(pessoa, endereco);
+
+        if (pessoa == null) {
+            throw new IllegalArgumentException("O objeto Pessoa no corpo da requisição não pode ser nulo.");
+        }
+
+        Pessoa pessoaAlterada = pessoaService.alterarPessoa(pessoa);
         return new ResponseEntity<>(pessoaAlterada, HttpStatus.OK);
     }
 
